@@ -1,6 +1,7 @@
 package com.narxoz.rpg.quest;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Traverses quests from newest arrival back to oldest arrival.
@@ -17,13 +18,16 @@ public class ReverseQuestIterator implements QuestIterator {
 
     @Override
     public boolean hasNext() {
-        // TODO: return true while the cursor still points at an unread quest.
-        return false;
+        return cursor >= 0;
     }
 
     @Override
     public Quest next() {
-        // TODO: return the current quest and move the cursor backward.
-        return null;
+        if (!hasNext()) {
+            throw new NoSuchElementException("No more quests in reverse order.");
+        }
+        Quest quest = snapshot.get(cursor);
+        cursor--;
+        return quest;
     }
 }
