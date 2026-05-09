@@ -1,0 +1,67 @@
+@startuml
+title Homework 10 Mediator Pattern
+
+interface GuildMediator {
+  +register(member: GuildMember): void
+  +dispatch(topic: String, from: GuildMember, payload: String): void
+}
+
+class GuildHall {
+  -membersByTopic: Map<String, List<GuildMember>>
+  -lastDispatchNotificationCount: int
+  -totalMessagesRouted: int
+  -totalNotifications: int
+  +register(member: GuildMember): void
+  +dispatch(topic: String, from: GuildMember, payload: String): void
+  +getLastDispatchNotificationCount(): int
+  +resetStatistics(): void
+}
+
+abstract class GuildMember {
+  -name: String
+  -mediator: GuildMediator
+  +getName(): String
+  #getMediator(): GuildMediator
+  #senderName(from: GuildMember): String
+  +receive(topic: String, from: GuildMember, payload: String): void
+}
+
+class Quartermaster {
+  +requestSupplies(payload: String): void
+  +receive(topic: String, from: GuildMember, payload: String): void
+}
+
+class Scout {
+  +reportRoute(payload: String): void
+  +receive(topic: String, from: GuildMember, payload: String): void
+}
+
+class Healer {
+  +prepareAid(payload: String): void
+  +receive(topic: String, from: GuildMember, payload: String): void
+}
+
+class Captain {
+  +issueOrder(payload: String): void
+  +receive(topic: String, from: GuildMember, payload: String): void
+}
+
+class Loremaster {
+  +shareLore(payload: String): void
+  +receive(topic: String, from: GuildMember, payload: String): void
+}
+
+GuildMediator <|.. GuildHall
+GuildMember <|-- Quartermaster
+GuildMember <|-- Scout
+GuildMember <|-- Healer
+GuildMember <|-- Captain
+GuildMember <|-- Loremaster
+GuildMember --> GuildMediator : mediator
+GuildHall o-- GuildMember : topic subscribers
+Quartermaster ..> GuildMediator : dispatch()
+Scout ..> GuildMediator : dispatch()
+Healer ..> GuildMediator : dispatch()
+Captain ..> GuildMediator : dispatch()
+Loremaster ..> GuildMediator : dispatch()
+@enduml
